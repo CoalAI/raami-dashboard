@@ -159,3 +159,17 @@ def main(county_name, state, _date, delta, months):
 
     final_df2 = final_df.merge(other_colums, on='apn', how='left')
     final_df2.to_csv(f'{score_directory_path}scores_{county_name}_[{delta}:{months}].csv')
+
+
+def get_counties():
+    query_string = """
+    SELECT DISTINCT county_name FROM `heroic-habitat-279715.owners.parcels` as parcel
+    """
+    return service.execute_query_q(query_string)['county_name'].tolist()
+
+
+def get_states():
+    query_string = """
+    SELECT DISTINCT state FROM `heroic-habitat-279715.owners.addresses` as address
+    """
+    return service.execute_query_q(query_string)['state'].tolist()
