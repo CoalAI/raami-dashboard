@@ -132,3 +132,6 @@ sqlite
 staticfiles
 assets
 .vscode
+
+
+dashboard/key.json
