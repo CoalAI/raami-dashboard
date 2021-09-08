@@ -172,6 +172,3 @@ def get_states():
     SELECT DISTINCT state FROM `heroic-habitat-279715.owners.addresses` as address
     """
     return service.execute_query_q(query_string)['state'].tolist()
-
-
-print(get_states())
