@@ -5,7 +5,7 @@ import pandas as pd
 from gcloud_bq import GcloudService
 
 service = GcloudService()
-score_directory_path = ''
+score_directory_path = '/home/ammar/deeds_scores/'
 
 
 def get_all_records(county):
@@ -139,16 +139,15 @@ def main(county_name, state, _date, delta, months):
     print(no_of_dfs)
 
     if no_of_apns < 120000:
-        final_df = compute_score(list(apns['apn']), elta=delta, months=months)
+        final_df = compute_score(list(apns['apn']), delta=delta, months=months)
     else:
         start = 0
         end = 100000
         score_dfs = []
 
         while start < no_of_apns:
-            print(start)
-            print(end)
-            _df = compute_score(list(apns.loc[start: end, 'apn']), elta=delta, months=months)
+            print(f'start: {start} , end: {end}')
+            _df = compute_score(list(apns.loc[start: end, 'apn']), delta=delta, months=months)
             score_dfs.append(_df)
             start = end + 1
             end = end + 100000 if end + 100000 < no_of_apns else no_of_apns - 1
