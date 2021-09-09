@@ -1,12 +1,12 @@
 import google.auth
+from django.conf import settings
 from google.cloud import bigquery, bigquery_storage
 
 
 class GcloudService:
 
     def __init__(self):
-        credentials, your_project_id = google.auth.load_credentials_from_file(
-            "key.json")
+        credentials, your_project_id = google.auth.load_credentials_from_file(settings.GCLOUD_FILE)
         self.bqclient = bigquery.Client(credentials=credentials, project=your_project_id)
         self.bqstorageclient = bigquery_storage.BigQueryReadClient(credentials=credentials)
 
