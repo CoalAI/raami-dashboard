@@ -1,8 +1,11 @@
 import time
 from datetime import datetime
+from os import listdir, stat
+from os.path import isfile, join
 
 import pandas as pd
 from django.conf import settings
+from django.utils.dateparse import parse_datetime
 
 from dashboard.score_calc_service.gcloud_bq import GcloudService
 
@@ -165,7 +168,7 @@ def main(data):
     other_colums = get_all_records(county_name)
 
     final_df2 = final_df.merge(other_colums, on='apn', how='left')
-    final_df2.to_csv(f'{score_directory_path}scores_{county_name}_[{delta}:{months}].csv')
+    final_df2.to_csv(f'{score_directory_path}scores_{county_name}.csv')
 
 
 def get_counties():
@@ -180,3 +183,23 @@ def get_states():
     SELECT DISTINCT state FROM `heroic-habitat-279715.owners.addresses` as address
     """
     return service.execute_query_q(query_string)['state'].tolist()
+
+
+def get_file_list(port):
+    print('getfilelist called!')
+    allfiles = []
+
+    for f in listdir(score_directory_path):
+        filepath = join(score_directory_path, f)
+        if isfile(filepath):
+            filestat = stat(filepath)
+            obj = {
+                'file_name': f,
+                'link': f"http://34.87.36.3:{port}/score_files/{f}",
+                'created_on': parse_datetime(datetime.fromtimestamp(int(filestat.st_ctime)).strftime('%Y-%m-%d %H:%M:%S')),
+                'size': f'{round(filestat.st_size/1024, 2)} KB'
+            }
+            allfiles.append(obj)
+
+    allfiles = sorted(allfiles, key=lambda k: k['created_on'], reverse=True)
+    return allfiles
