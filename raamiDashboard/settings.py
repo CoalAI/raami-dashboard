@@ -143,3 +143,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'calculate-score'
+
+SCORE_DIR = os.path.join(BASE_DIR, 'score_files/')
+GCLOUD_FILE = os.path.join(BASE_DIR, 'key.json')

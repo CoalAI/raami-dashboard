@@ -2,10 +2,12 @@ import time
 from datetime import datetime
 
 import pandas as pd
-from gcloud_bq import GcloudService
+from django.conf import settings
+
+from dashboard.score_calc_service.gcloud_bq import GcloudService
 
 service = GcloudService()
-score_directory_path = '/home/ammar/deeds_scores/'
+score_directory_path = settings.SCORE_DIR
 
 
 def get_all_records(county):
@@ -113,7 +115,13 @@ def compute_score(apns, delta, months, now_date='2018-01-01'):
     return service.execute_with_params(score_cal_query, "ids", apns)
 
 
-def main(county_name, state, _date, delta, months):
+def main(data):
+
+    county_name = data['county_name']
+    state = data['state']
+    _date = data['_date']
+    delta = data['delta']
+    months = data['months']
 
     start = time.time()
 

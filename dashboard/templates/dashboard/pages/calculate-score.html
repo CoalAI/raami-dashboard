@@ -14,23 +14,30 @@
         <div class="card">
           <div class="card-body">
             <h4 class="card-title">Calculate Score</h4>
-            <div class="form-group">
-              <label>County</label>
-              <select class="js-example-basic-single w-100">
-                {% for county in counties %}
-                  <option value="{{county}}">{{county}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="form-group">
-              <label>State</label>
-              <select class="js-example-basic-single w-100">
-                {% for state in states %}
-                  <option value="{{state}}">{{state}}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary me-2">Submit</button>
+            <form method="POST" id="scoreForm">
+              <div class="form-group">
+                <label>County</label>
+                <select class="js-example-basic-single w-100" id="county" name="county">
+                  {% for county in counties %}
+                    <option value="{{county}}">{{county}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>State</label>
+                <select class="js-example-basic-single w-100" id="state" name="state">
+                  <option value="">No State</option>
+                  {% for state in states %}
+                    <option value="{{state}}">{{state}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" id="scoreForm_btn" class="btn btn-primary me-2">
+                <span id="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Submit
+              </button>
+              <span id="message_text">{{message}}</span>
+            </form>
           </div>
         </div>
       </div>
@@ -49,4 +56,54 @@
 <script src="{% static 'js/file-upload.js' %}"></script>
 <script src="{% static 'js/typeahead.js' %}"></script>
 <script src="{% static 'js/select2.js' %}"></script>
+<script>
+  $('#scoreForm').submit(ajax_submit_param);
+  $('#loader').hide();
+
+  function ajax_submit_param(event) {
+    console.log('ayayaya');
+    event.preventDefault();
+    $('#scoreForm_btn').prop("disabled", true);
+    $('#loader').show();
+
+    const county =  $("#county").val();
+    const state =  $("#state").val()
+
+    $.ajax('', {
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      data: {
+        'county': county,
+        'state': state
+      },
+      type: 'post',
+      success: function (result) {
+        // success code execution here
+        $('#message_text').html(result);
+      },
+      error: function (xhr, status, error) {
+        $('#message_text').html(error);
+      },
+      complete: function (xhr, status) {
+        // completion code here
+        $('#scoreForm_btn').prop("disabled", false);
+        $('#loader').hide();
+      }
+    });
+  }
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
 {% endblock %}

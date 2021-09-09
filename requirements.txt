@@ -11,6 +11,7 @@ Cython==0.29.24
 dataclasses==0.8
 distlib==0.3.2
 Django==3.2.7
+django-widget-tweaks==1.4.8
 filelock==3.0.12
 google-api-core==1.31.2
 google-auth==1.35.0
