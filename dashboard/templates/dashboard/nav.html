@@ -8,11 +8,15 @@
       </button>
     </div>
     <div>
-      <a class="navbar-brand brand-logo" href="index.html">
-        <img src="{% static 'images/logo.svg' %}" alt="logo" />
+      <a class="navbar-brand brand-logo" href="{% url 'calculate-score' %}">
+        <p style="color: black; font-size: 24px; font-weight: 900;">
+          Data<span style="color: #1f3bb3;">flick</span>
+        </p>
       </a>
-      <a class="navbar-brand brand-logo-mini" href="index.html">
-        <img src="{% static 'images/logo-mini.svg' %}" alt="logo" />
+      <a class="navbar-brand brand-logo-mini" href="{% url 'calculate-score' %}">
+        <p style="color: black; font-size: 15px; font-weight: 700;">
+          Data<span style="color: #1f3bb3;">flick</span>
+        </p>
       </a>
     </div>
   </div>
