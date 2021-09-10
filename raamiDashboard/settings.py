@@ -146,3 +146,7 @@ LOGIN_REDIRECT_URL = 'calculate-score'
 
 SCORE_DIR = os.path.join(BASE_DIR, 'score_files/')
 GCLOUD_FILE = os.path.join(BASE_DIR, 'key.json')
+
+
+MEDIA_URL = '/score_files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'score_files')

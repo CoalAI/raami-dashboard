@@ -6,6 +6,7 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 
 from dashboard.score_calc_service.score_calc_utils import (get_counties,
+                                                           get_file_list,
                                                            get_states, main)
 
 
@@ -15,7 +16,8 @@ def index(request):
 
 @login_required
 def file_available(request):
-    return render(request, 'dashboard/pages/files-available.html', {'Title': 'Raami Dashboard'})
+    files_list = get_file_list(request.get_port())
+    return render(request, 'dashboard/pages/files-available.html', {'Title': 'Raami Dashboard', 'files': files_list})
 
 
 class CustomResponse(HttpResponse):
