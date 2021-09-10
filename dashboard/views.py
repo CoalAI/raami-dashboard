@@ -33,6 +33,7 @@ class CustomResponse(HttpResponse):
 
 @login_required
 def calculate_score(request):
+    recipient_email = request.user.email
     if request.method == 'GET':
         counties = get_counties()
         states = get_states()
@@ -52,7 +53,8 @@ def calculate_score(request):
             'state': state,
             '_date': None,
             'delta': 720,
-            'months': 24
+            'months': 24,
+            'email': recipient_email
         }
 
         return CustomResponse(message, main, data)

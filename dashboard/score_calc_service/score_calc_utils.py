@@ -7,6 +7,7 @@ import pandas as pd
 from django.conf import settings
 from django.utils.dateparse import parse_datetime
 
+from dashboard.score_calc_service.email import send_email
 from dashboard.score_calc_service.gcloud_bq import GcloudService
 
 service = GcloudService()
@@ -125,6 +126,7 @@ def main(data):
     _date = data['_date']
     delta = data['delta']
     months = data['months']
+    recepient_email = data['email']
 
     start = time.time()
 
@@ -169,6 +171,7 @@ def main(data):
 
     final_df2 = final_df.merge(other_colums, on='apn', how='left')
     final_df2.to_csv(f'{score_directory_path}scores_{county_name}.csv')
+    send_email("Dataflik Score", f"{environ.get('HOST_ADDRESS','127.0.0.1')}:8001/score_files/scores_{county_name}.csv", recepient_email)
 
 
 def get_counties():
