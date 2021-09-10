@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-from os import listdir, stat
+from os import environ, listdir, stat
 from os.path import isfile, join
 
 import pandas as pd
@@ -195,7 +195,7 @@ def get_file_list(port):
             filestat = stat(filepath)
             obj = {
                 'file_name': f,
-                'link': f"http://34.87.36.3:{port}/score_files/{f}",
+                'link': f"{environ.get('HOST_ADDRESS','127.0.0.1')}:{port}/score_files/{f}",
                 'created_on': parse_datetime(datetime.fromtimestamp(int(filestat.st_ctime)).strftime('%Y-%m-%d %H:%M:%S')),
                 'size': f'{round(filestat.st_size/1024, 2)} KB'
             }
