@@ -12,3 +12,4 @@ RUN /py/bin/pip install gunicorn
 RUN /py/bin/pip install -r requirements.txt
 RUN /py/bin/python3 manage.py migrate
 RUN /py/bin/python3 manage.py collectstatic --noinput
+RUN mkdir score_files
