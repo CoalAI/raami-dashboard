@@ -4,6 +4,121 @@
 {% block extra-css %}
 <link rel="stylesheet" href="{% static 'vendors/select2/select2.min.css' %}">
 <link rel="stylesheet" href="{% static 'vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+<style>
+  .toast__container {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .toast__cell {
+    display: inline-block;
+  }
+
+  .add-margin {
+    margin-top: 20px;
+  }
+
+  .toast__svg {
+    fill: #fff;
+  }
+
+  .custom-toast {
+    text-align: left;
+    padding: 21px 0;
+    background-color: #fff;
+    border-radius: 4px;
+    max-width: 500px;
+    top: 0px;
+    position: relative;
+    box-shadow: 1px 7px 14px -5px rgba(0, 0, 0, 0.2);
+  }
+
+
+  .custom-toast:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .toast__icon {
+    position: absolute;
+    top: 50%;
+    left: 22px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    padding: 7px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .toast__type {
+    color: #3e3e3e;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+
+  .toast__message {
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #878787;
+  }
+
+  .toast__content {
+    padding-left: 70px;
+    padding-right: 60px;
+  }
+
+  .toast__close {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    width: 14px;
+    cursor: pointer;
+    height: 14px;
+    fill: #878787;
+    transform: translateY(-50%);
+  }
+
+  .toast--green .toast__icon {
+    background-color: #2BDE3F;
+  }
+
+  .toast--green:before {
+    background-color: #2BDE3F;
+  }
+
+  .toast--blue .toast__icon {
+    background-color: #1D72F3;
+  }
+
+  .toast--blue:before {
+    background-color: #1D72F3;
+  }
+
+  .toast--red .toast__icon {
+    background-color: #FF0000;
+  }
+
+  .toast--red:before {
+    background-color: #FF0000;
+  }
+
+  .toast--yellow .toast__icon {
+    background-color: #FFC007;
+  }
+
+  .toast--yellow:before {
+    background-color: #FFC007;
+  }
+</style>
 {% endblock %}
 
 {% block left-content %}
@@ -19,7 +134,7 @@
                 <label>County</label>
                 <select class="js-example-basic-single w-100" id="county" name="county">
                   {% for county in counties %}
-                    <option value="{{county}}">{{county}}</option>
+                  <option value="{{county}}">{{county}}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -28,7 +143,7 @@
                 <select class="js-example-basic-single w-100" id="state" name="state">
                   <option value="">No State</option>
                   {% for state in states %}
-                    <option value="{{state}}">{{state}}</option>
+                  <option value="{{state}}">{{state}}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -38,6 +153,14 @@
               </button>
               <span id="message_text">{{message}}</span>
             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="offset-6 col-sm-6">
+        <div class="toast__container">
+          <div class="toast__cell">
           </div>
         </div>
       </div>
@@ -60,33 +183,40 @@
   $('#scoreForm').submit(ajax_submit_param);
   $('#loader').hide();
 
+
   function ajax_submit_param(event) {
-    console.log('ayayaya');
     event.preventDefault();
     $('#scoreForm_btn').prop("disabled", true);
     $('#loader').show();
 
-    const county =  $("#county").val();
-    const state =  $("#state").val()
+    const county = $("#county").val();
+    const state = $("#state").val()
 
     $.ajax('', {
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
       data: {
         'county': county,
         'state': state
       },
       type: 'post',
       success: function (result) {
+        AddNotification();
         // success code execution here
-        $('#message_text').html(result);
+        $('#notification').addClass('toast--green');
+        $('#noti-title').html('Success');
+        $('#noti-title').html(result);
       },
       error: function (xhr, status, error) {
-        $('#message_text').html(error);
+        AddNotification();
+        $('#notification').addClass('toast--red');
+        $('#noti-title').html('Error');
+        $('#noti-title').html(error);
       },
       complete: function (xhr, status) {
         // completion code here
-        $('#scoreForm_btn').prop("disabled", false);
         $('#loader').hide();
+        setInterval(() => $('#scoreForm_btn').prop("disabled", false), 30000);
+        setInterval(closeNotification, 30000)
       }
     });
   }
@@ -104,6 +234,37 @@
       }
     }
     return cookieValue;
+  }
+
+  function closeNotification() {
+    $('.custom-toast').fadeOut("slow", function () { $(this).remove(); });
+  }
+
+  function AddNotification() {
+    const html = `
+      <div id="notification" class="custom-toast">
+        <div class="toast__icon">
+        </div>
+        <div class="toast__content">
+          <p id="noti-title" class="toast__type"></p>
+          <p id="noti-message" class="toast__message"></p>
+        </div>
+        <div class="toast__close">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642"
+            xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 15.642 15.642">
+            <path fill-rule="evenodd"
+              d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z">
+            </path>
+          </svg>
+        </div>
+      </div>
+    `;
+    $(html).hide().appendTo(".toast__cell").fadeIn(1000);
+    $('.toast__close').click(function (e) {
+      e.preventDefault();
+      var parent = $(this).parent('.custom-toast');
+      parent.fadeOut("slow", function () { $(this).remove(); });
+    });
   }
 </script>
 {% endblock %}

@@ -1,7 +1,7 @@
 (function($) {
   'use strict';
   $(function() {
-    $('#order-listing').DataTable({
+    $('#files-table').DataTable({
       "aLengthMenu": [
         [5, 10, 15, -1],
         [5, 10, 15, "All"]
@@ -11,7 +11,7 @@
         search: ""
       }
     });
-    $('#order-listing').each(function() {
+    $('#files-table').each(function() {
       var datatable = $(this);
       // SEARCH - Add the placeholder for Search and Turn this into in-line form control
       var search_input = datatable.closest('.dataTables_wrapper').find('div[id$=_filter] input');
