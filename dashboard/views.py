@@ -46,7 +46,7 @@ def calculate_score(request):
         county = request.POST.get('county', None)
         state = request.POST.get('state', None)
         state = state if state != "" else None
-        message = f"Score Calculation process started for {county} {f'and {state}' if state else ''}"
+        message = f"Score Calculation process started for {county} {f'and {state}' if state else ''}. "
         message += "We'll inform you by email once the file is available"
 
         data = {
