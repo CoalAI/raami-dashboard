@@ -54,7 +54,9 @@ def calculate_score(request):
             '_date': None,
             'delta': 720,
             'months': 24,
-            'email': recipient_email
+            'email': recipient_email,
+            'port': request.get_port(),
+            'user': request.user.username
         }
 
         return CustomResponse(message, main, data)
